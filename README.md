@@ -1,69 +1,204 @@
-EXP 05: TO DO APPLICATION
-AIM:
-To Develop a complete Todo application with all features using React
+# EXP 05: TO DO APPLICATION
 
-ALGORITHM:
-Set up your React project.
+## AIM:
+ To Develop a complete Todo application with all features using React
+ 
+ ## ALGORITHM:
+ 1. Set up your React project.
+ 
+ 2. Create the main component.
+ 
+ 3. Create the input form.
+ 
+ 4. Display the todo list.
+ 
+ 5. Add functionality to mark items as complete.
+ 
+ 6. Add functionality to delete items.
+ 
+ ## PROGRAM:
+ 
+ ### App.js:
+ java
+ import React, { useState } from 'react';
+import './App.css';
 
-Create the main component.
+function App() {
+  const [tasks, setTasks] = useState([]);
+  const [newTask, setNewTask] = useState('');
+  const [editTaskId, setEditTaskId] = useState(null);
 
-Create the input form.
+  const handleAddTask = () => {
+    if (newTask.trim() !== '') {
+      const newTaskItem = {
+        id: Date.now(),
+        text: newTask,
+        completed: false,
+      };
+      setTasks([...tasks, newTaskItem]);
+      setNewTask('');
+    }
+  };
 
-Display the todo list.
+  const handleEditTask = (id, newText) => {
+    const updatedTasks = tasks.map((task) => {
+      if (task.id === id) {
+        return {
+          ...task,
+          text: newText,
+        };
+      }
+      return task;
+    });
+    setTasks(updatedTasks);
+    setEditTaskId(null);
+  };
 
-Add functionality to mark items as complete.
+  const handleDeleteTask = (id) => {
+    const updatedTasks = tasks.filter((task) => task.id !== id);
+    setTasks(updatedTasks);
+  };
 
-Add functionality to delete items.
+  const handleToggleComplete = (id) => {
+    const updatedTasks = tasks.map((task) => {
+      if (task.id === id) {
+        return {
+          ...task,
+          completed: !task.completed,
+        };
+      }
+      return task;
+    });
+    setTasks(updatedTasks);
+  };
 
-PROGRAM:
-App.js:
-java import React, { useState } from 'react'; import './App.css';
+  return (
+    <div className="todo-app">
+      <h1 style={{textAlign:"center"}}>TO-DO LIST</h1>
+      <div className="task-input">
+        <input
+          type="text"
+          value={newTask}
+          onChange={(e) => setNewTask(e.target.value)}
+          placeholder="Enter a new task"
+        />
+        <button onClick={handleAddTask}>Add</button>
+      </div>
+      <ul className="task-list">
+        {tasks.map((task) => (
+          <li key={task.id} className={task.completed ? 'completed' : ''}>
+            <input
+              type="checkbox"
+              checked={task.completed}
+              onChange={() => handleToggleComplete(task.id)}
+            />
+            {editTaskId === task.id ? (
+              <input
+                type="text"
+                value={task.text}
+                onChange={(e) => handleEditTask(task.id, e.target.value)}
+              />
+            ) : (
+              <span>{task.text}</span>
+            )}
+            <div className="task-actions">
+              {editTaskId === task.id ? (
+                <button onClick={() => handleEditTask(task.id, task.text)}>Save</button>
+              ) : (
+                <button onClick={() => setEditTaskId(task.id)}>Edit</button>
+              )}
+              <button onClick={() => handleDeleteTask(task.id)}>Delete</button>
+            </div>
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+}
+export default App;
+ 
+ 
+ ### App.css:
+ java
+ .todo-app {
+  width: 400px;
+  margin: 50px auto;
+  background-color:rgb(231, 238, 143);
+  padding:20px;
+}
 
-function App() { const [tasks, setTasks] = useState([]); const [newTask, setNewTask] = useState(''); const [editTaskId, setEditTaskId] = useState(null);
+.task-input {
+  display: flex;
+  margin-bottom: 10px;
+}
 
-const handleAddTask = () => { if (newTask.trim() !== '') { const newTaskItem = { id: Date.now(), text: newTask, completed: false, }; setTasks([...tasks, newTaskItem]); setNewTask(''); } };
+.task-input input[type='text'] {
+  flex-grow: 1;
+  height: 30px;
+  font-size: 16px;
+  padding: 5px;
+}
 
-const handleEditTask = (id, newText) => { const updatedTasks = tasks.map((task) => { if (task.id === id) { return { ...task, text: newText, }; } return task; }); setTasks(updatedTasks); setEditTaskId(null); };
+.task-input button {
+  height: 30px;
+  margin-left: 10px;
+  background-color: #d29a51;
+  color: #fff;
+  border: none;
+  cursor: pointer;
+}
 
-const handleDeleteTask = (id) => { const updatedTasks = tasks.filter((task) => task.id !== id); setTasks(updatedTasks); };
+.task-list {
+  list-style: none;
+  padding: 0;
+}
 
-const handleToggleComplete = (id) => { const updatedTasks = tasks.map((task) => { if (task.id === id) { return { ...task, completed: !task.completed, }; } return task; }); setTasks(updatedTasks); };
+.task-list li {
+  display: flex;
+  align-items: center;
+  padding: 10px;
+  background-color: #f1f1f1;
+  margin-bottom: 5px;
+  text-decoration: none;
+}
 
-return (
+.task-list li.completed span {
+  text-decoration: line-through;
+}
 
-<h1 style={{textAlign:"center"}}>TO-DO LIST
-<input type="text" value={newTask} onChange={(e) => setNewTask(e.target.value)} placeholder="Enter a new task" /> Add
-{tasks.map((task) => ( <li key={task.id} className={task.completed ? 'completed' : ''}> <input type="checkbox" checked={task.completed} onChange={() => handleToggleComplete(task.id)} /> {editTaskId === task.id ? ( <input type="text" value={task.text} onChange={(e) => handleEditTask(task.id, e.target.value)} /> ) : ( {task.text} )}
-{editTaskId === task.id ? ( <button onClick={() => handleEditTask(task.id, task.text)}>Save ) : ( <button onClick={() => setEditTaskId(task.id)}>Edit )} <button onClick={() => handleDeleteTask(task.id)}>Delete
-))}
-); } export default App;
-App.css:
-java .todo-app { width: 400px; margin: 50px auto; background-color:rgb(231, 238, 143); padding:20px; }
+.task-list li input[type='checkbox'] {
+  margin-right: 10px;
+}
 
-.task-input { display: flex; margin-bottom: 10px; }
+.task-list li input[type='text'] {
+  flex-grow: 1;
+  height: 25px;
+  font-size: 14px;
+  padding: 3px;
+}
 
-.task-input input[type='text'] { flex-grow: 1; height: 30px; font-size: 16px; padding: 5px; }
+.task-list li button {
+  margin-left: 10px;
+  background-color: #ff4d4d;
+  color: #fff;
+  border: none;
+  cursor: pointer;
+}
+.task-actions {
+  display: flex;
+}
 
-.task-input button { height: 30px; margin-left: 10px; background-color: #d29a51; color: #fff; border: none; cursor: pointer; }
+.task-actions button {
+  margin-left: 5px;
+}
 
-.task-list { list-style: none; padding: 0; }
+ 
+ 
+ ## OUTPUT:
+ ![image](https://github.com/Aashima02/To-Do-Application/assets/93427086/69657e6a-d3e4-448b-b303-a1735fa526e4)
 
-.task-list li { display: flex; align-items: center; padding: 10px; background-color: #f1f1f1; margin-bottom: 5px; text-decoration: none; }
+![image](https://github.com/Aashima02/To-Do-Application/assets/93427086/9d537f67-c97e-4a6c-a06f-67958ed1e9da)
 
-.task-list li.completed span { text-decoration: line-through; }
-
-.task-list li input[type='checkbox'] { margin-right: 10px; }
-
-.task-list li input[type='text'] { flex-grow: 1; height: 25px; font-size: 14px; padding: 3px; }
-
-.task-list li button { margin-left: 10px; background-color: #ff4d4d; color: #fff; border: none; cursor: pointer; } .task-actions { display: flex; }
-
-.task-actions button { margin-left: 5px; }
-
-OUTPUT:
-image
-
-image
-
-RESULT:
-Thus,a todo application is created using react.
+ 
+ ## RESULT:
+ Thus,a todo application is created using react.
